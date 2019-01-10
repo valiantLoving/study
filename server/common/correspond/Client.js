@@ -115,7 +115,7 @@ class Client {
     }
     static compressPacket(buffer) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deflateBuf = yield deflateAsync(buffer);
+            const deflateBuf = (yield deflateAsync(buffer));
             const byteBuf = new ByteBuffer_1.ByteBuffer();
             byteBuf.byteArray(deflateBuf.length, deflateBuf);
             return byteBuf.pack(true);
@@ -140,7 +140,7 @@ class Client {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (cli._socket && cli._status == ESocketStatus.CONNECTED) {
-                    const sendBuffer = this.compressPacket(bufferData);
+                    const sendBuffer = yield this.compressPacket(bufferData);
                     cli._socket.write(sendBuffer, "utf8", function () {
                         console.log(`send data success! ${sendBuffer.length} bytes`);
                     });

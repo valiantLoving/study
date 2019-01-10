@@ -1,6 +1,7 @@
 import { Schema, Connection } from "mongoose";
 import { IPlayerDocument, IPlayerModel, IPlayer } from "../ModelsInterface";
 import * as _ from "underscore";
+// import R = require("ramda");
 
 var PlayerSchema: Schema = new Schema({
     userId: {

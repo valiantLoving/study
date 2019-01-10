@@ -13,14 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongodb_1 = require("../common/database/mongodb");
 const underscore_1 = __importDefault(require("underscore"));
-const originUid = "2022s438p3806111";
-const targetUid = "1s2p114";
+const originUid = "62s190p1622507";
+const targetUid = "1s2p409";
 const privateHost = "120.77.233.20";
 const h5PrivateHost = "120.24.212.108";
-const whiteHosts = [privateHost, h5PrivateHost, "localhost"];
+const playerPrivateHost = "120.78.193.157";
+const whiteHosts = [privateHost, h5PrivateHost, playerPrivateHost, "localhost"];
 const copyPlayer = () => __awaiter(this, void 0, void 0, function* () {
-    const originDB = new mongodb_1.MongoClient("120.76.208.248", "poke438");
-    const targetHost = h5PrivateHost;
+    const originDB = new mongodb_1.MongoClient("120.76.234.246", "pokeMers181");
+    const targetHost = playerPrivateHost;
     if (!underscore_1.default.contains(whiteHosts, targetHost)) {
         throw Error(`只能向测试服务器copy数据,以免误操作!`);
     }
