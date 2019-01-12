@@ -7,8 +7,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const playerModel = __importStar(require("./player"));
-exports.getModel = (modelName, db) => {
+var playerModel = __importStar(require("./player"));
+exports.getModel = function (modelName, db) {
     switch (modelName) {
         case "player":
             return playerModel.getModel(db);

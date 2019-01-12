@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const R = require("ramda");
+var R = require("ramda");
 var ETypes;
 (function (ETypes) {
     ETypes[ETypes["BYTE"] = 1] = "BYTE";
@@ -15,23 +15,23 @@ var ETypes;
     ETypes[ETypes["DOUBLE"] = 10] = "DOUBLE";
     ETypes[ETypes["BYTE_ARRAY"] = 11] = "BYTE_ARRAY";
 })(ETypes || (ETypes = {}));
-class ByteBuffer {
-    constructor(org_buf, offset) {
+var ByteBuffer = (function () {
+    function ByteBuffer(org_buf, offset) {
         this._org_buf = org_buf;
         this._encoding = "utf8";
         this._offset = offset || 0;
         this._list = [];
         this._endian = "B";
     }
-    encoding(encode) {
+    ByteBuffer.prototype.encoding = function (encode) {
         this._encoding = encode;
         return this;
-    }
-    endian(endian) {
+    };
+    ByteBuffer.prototype.endian = function (endian) {
         this._endian = endian;
         return this;
-    }
-    dealTypes(val, index, offset, ele, type, len) {
+    };
+    ByteBuffer.prototype.dealTypes = function (val, index, offset, ele, type, len) {
         if (val == undefined || val == null) {
             this._list.push(ele);
         }
@@ -44,41 +44,42 @@ class ByteBuffer {
         }
         this._offset += offset;
         return this;
-    }
-    dealRead(type, offset) {
-        const readMethods = {
-            [ETypes.BYTE]: "readUInt8",
-            [ETypes.SHORT]: `readInt16${this._endian}E`,
-            [ETypes.USHORT]: `readUInt16${this._endian}E`,
-            [ETypes.INT32]: `readInt32${this._endian}E`,
-            [ETypes.UINT32]: `readUInt32${this._endian}E`
-        };
-        const method = readMethods[type];
+    };
+    ByteBuffer.prototype.dealRead = function (type, offset) {
+        var _a;
+        var readMethods = (_a = {},
+            _a[ETypes.BYTE] = "readUInt8",
+            _a[ETypes.SHORT] = "readInt16" + this._endian + "E",
+            _a[ETypes.USHORT] = "readUInt16" + this._endian + "E",
+            _a[ETypes.INT32] = "readInt32" + this._endian + "E",
+            _a[ETypes.UINT32] = "readUInt32" + this._endian + "E",
+            _a);
+        var method = readMethods[type];
         var val = this._org_buf[method](this._offset);
         this._offset += offset;
         return val;
-    }
-    byte(val, index) {
+    };
+    ByteBuffer.prototype.byte = function (val, index) {
         return this.dealTypes(val, index, 1, this._org_buf.readUInt8(this._offset), ETypes.BYTE, 1);
-    }
-    readByte() {
+    };
+    ByteBuffer.prototype.readByte = function () {
         return this.dealRead(ETypes.BYTE, 1);
-    }
-    short(val, index) {
-        return this.dealTypes(val, index, 2, this._org_buf[`readInt16${this._endian}E`](this._offset), ETypes.SHORT, 2);
-    }
-    readShort() {
+    };
+    ByteBuffer.prototype.short = function (val, index) {
+        return this.dealTypes(val, index, 2, this._org_buf["readInt16" + this._endian + "E"](this._offset), ETypes.SHORT, 2);
+    };
+    ByteBuffer.prototype.readShort = function () {
         return this.dealRead(ETypes.SHORT, 2);
-    }
-    ushort(val, index) {
-        return this.dealTypes(val, index, 2, this._org_buf[`readUInt16${this._endian}E`](this._offset), ETypes.USHORT, 2);
-    }
-    readUshort() {
+    };
+    ByteBuffer.prototype.ushort = function (val, index) {
+        return this.dealTypes(val, index, 2, this._org_buf["readUInt16" + this._endian + "E"](this._offset), ETypes.USHORT, 2);
+    };
+    ByteBuffer.prototype.readUshort = function () {
         return this.dealRead(ETypes.USHORT, 2);
-    }
-    int32(val, index) {
+    };
+    ByteBuffer.prototype.int32 = function (val, index) {
         if (R.isNil(val)) {
-            this._list.push(this._org_buf[`readInt32${this._endian}E`](this._offset));
+            this._list.push(this._org_buf["readInt32" + this._endian + "E"](this._offset));
         }
         else {
             this._list.splice(index != undefined ? index : this._list.length, 0, {
@@ -89,13 +90,13 @@ class ByteBuffer {
         }
         this._offset += 4;
         return this;
-    }
-    readInt32() {
+    };
+    ByteBuffer.prototype.readInt32 = function () {
         return this.dealRead(ETypes.INT32, 4);
-    }
-    uint32(val, index) {
+    };
+    ByteBuffer.prototype.uint32 = function (val, index) {
         if (R.isNil(val)) {
-            this._list.push(this._org_buf[`readUInt32${this._endian}E`](this._offset));
+            this._list.push(this._org_buf["readUInt32" + this._endian + "E"](this._offset));
         }
         else {
             this._list.splice(index != undefined ? index : this._list.length, 0, {
@@ -106,19 +107,19 @@ class ByteBuffer {
         }
         this._offset += 4;
         return this;
-    }
-    readUInt32() {
+    };
+    ByteBuffer.prototype.readUInt32 = function () {
         return this.dealRead(ETypes.UINT32, 4);
-    }
-    string(val, index) {
+    };
+    ByteBuffer.prototype.string = function (val, index) {
         if (R.isNil(val)) {
-            const len = this._org_buf[`readUInt32${this._endian}E`](this._offset);
+            var len = this._org_buf["readUInt32" + this._endian + "E"](this._offset);
             this._offset += 4;
             this._list.push(this._org_buf.toString(this._encoding, this._offset, this._offset + len));
             this._offset += len;
         }
         else {
-            const len = val ? Buffer.byteLength(val, this._encoding) : 0;
+            var len = val ? Buffer.byteLength(val, this._encoding) : 0;
             this._list.splice(index != undefined ? index : this._list.length, 0, {
                 t: ETypes.STRING,
                 d: val,
@@ -127,21 +128,21 @@ class ByteBuffer {
             this._offset += len + 4;
         }
         return this;
-    }
-    readString() {
-        const len = this._org_buf[`readUInt32${this._endian}E`](this._offset);
+    };
+    ByteBuffer.prototype.readString = function () {
+        var len = this._org_buf["readUInt32" + this._endian + "E"](this._offset);
         this._offset += 4;
         var val = this._org_buf.toString(this._encoding, this._offset, this._offset + len);
         this._offset += len;
         return val;
-    }
-    byteArray(len, val, index) {
+    };
+    ByteBuffer.prototype.byteArray = function (len, val, index) {
         if (!len) {
-            throw new Error(`ByteBuffer byteArray mush receive len argument`);
+            throw new Error("ByteBuffer byteArray mush receive len argument");
         }
         if (R.isNil(val)) {
-            const arr = [];
-            for (let i = this._offset; i < this._offset + len; i++) {
+            var arr = [];
+            for (var i = this._offset; i < this._offset + len; i++) {
                 if (i < this._org_buf.length) {
                     arr.push(this._org_buf.readUInt8(i));
                 }
@@ -157,90 +158,91 @@ class ByteBuffer {
             this._offset += len;
         }
         return this;
-    }
-    unpack() {
+    };
+    ByteBuffer.prototype.unpack = function () {
         return this._list;
-    }
-    pack(isHead) {
+    };
+    ByteBuffer.prototype.pack = function (isHead) {
         this._org_buf = Buffer.alloc(isHead ? this._offset + 4 : this._offset);
-        let offset = 0;
+        var offset = 0;
         if (isHead) {
-            this._org_buf[`writeUInt32${this._endian}E`](this._offset, offset);
+            this._org_buf["writeUInt32" + this._endian + "E"](this._offset, offset);
             offset += 4;
-            console.log(`=======pack head========, ${JSON.stringify(this)}`);
+            console.log("=======pack head========, " + JSON.stringify(this));
         }
-        for (let i = 0; i < this._list.length; i++) {
-            const ele = this._list[i];
+        for (var i = 0; i < this._list.length; i++) {
+            var ele = this._list[i];
             switch (ele.t) {
                 case ETypes.BYTE:
                     this._org_buf.writeUInt8(ele.d, offset);
                     offset += ele.l;
                     break;
                 case ETypes.SHORT:
-                    this._org_buf[`writeInt16${this._endian}E`](ele.d, offset);
+                    this._org_buf["writeInt16" + this._endian + "E"](ele.d, offset);
                     offset += ele.l;
                     break;
                 case ETypes.USHORT:
-                    this._org_buf[`writeUInt16${this._endian}E`](ele.d, offset);
+                    this._org_buf["writeUInt16" + this._endian + "E"](ele.d, offset);
                     offset += ele.l;
                     break;
                 case ETypes.INT32:
-                    this._org_buf[`writeInt32${this._endian}E`](ele.d, offset);
+                    this._org_buf["writeInt32" + this._endian + "E"](ele.d, offset);
                     offset += ele.l;
                     break;
                 case ETypes.UINT32:
-                    this._org_buf[`writeUInt32${this._endian}E`](ele.d, offset);
+                    this._org_buf["writeUInt32" + this._endian + "E"](ele.d, offset);
                     offset += ele.l;
                     break;
                 case ETypes.STRING:
-                    this._org_buf[`writeUInt32${this._endian}E`](ele.l, offset);
+                    this._org_buf["writeUInt32" + this._endian + "E"](ele.l, offset);
                     offset += 4;
                     this._org_buf.write(ele.d, offset, ele.l, this._encoding);
                     offset += ele.l;
                     break;
                 case ETypes.VSTRING:
-                    const vLen = Buffer.byteLength(ele.d, this._encoding);
+                    var vLen = Buffer.byteLength(ele.d, this._encoding);
                     this._org_buf.write(ele.d, offset, ele.l, this._encoding);
-                    for (let j = offset + vLen; j < offset + ele.l; j++) {
+                    for (var j = offset + vLen; j < offset + ele.l; j++) {
                         this._org_buf.writeUInt8(0, j);
                     }
                     offset += ele.l;
                     break;
                 case ETypes.INT64:
-                    this._org_buf[`writeDouble${this._endian}E`](ele.d, offset);
+                    this._org_buf["writeDouble" + this._endian + "E"](ele.d, offset);
                     offset += ele.l;
                     break;
                 case ETypes.FLOAT:
-                    this._org_buf[`writeFloat${this._endian}E`](ele.d, offset);
+                    this._org_buf["writeFloat" + this._endian + "E"](ele.d, offset);
                     offset += ele.l;
                     break;
                 case ETypes.DOUBLE:
-                    this._org_buf[`writeDouble${this._endian}E`](ele.d, offset);
+                    this._org_buf["writeDouble" + this._endian + "E"](ele.d, offset);
                     offset += ele.l;
                     break;
                 case ETypes.BYTE_ARRAY:
-                    let index = 0;
-                    for (let i = offset; i < offset + ele.l; i++) {
+                    var index = 0;
+                    for (var i_1 = offset; i_1 < offset + ele.l; i_1++) {
                         if (index < ele.d.length) {
-                            this._org_buf.writeUInt8(ele.d[index], i);
+                            this._org_buf.writeUInt8(ele.d[index], i_1);
                         }
                         else {
-                            this._org_buf.writeUInt8(0, i);
+                            this._org_buf.writeUInt8(0, i_1);
                         }
                         index++;
                     }
                     offset += ele.l;
                     break;
             }
-            console.log(`=======pack ${i}========, ele ${JSON.stringify(ele)}, ${JSON.stringify(this)}`);
+            console.log("=======pack " + i + "========, ele " + JSON.stringify(ele) + ", " + JSON.stringify(this));
         }
         return this._org_buf;
-    }
-    getAvailable() {
+    };
+    ByteBuffer.prototype.getAvailable = function () {
         if (!this._org_buf) {
             return this._offset;
         }
         return this._org_buf.length - this._offset;
-    }
-}
+    };
+    return ByteBuffer;
+}());
 exports.ByteBuffer = ByteBuffer;

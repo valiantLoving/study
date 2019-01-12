@@ -6,9 +6,9 @@ import moment = require("moment");
 import { EncryptoTool } from "../EncryptoTool";
 import { deflate } from "zlib";
 import *  as R from "ramda";
-import Promise = require("bluebird");
+import Bluebird = require("bluebird");
 // global.Promise = require("bluebird");
-const deflateAsync = Promise.promisify(deflate);
+const deflateAsync = Bluebird.promisify(deflate);
 
 /**socket状态 */
 export enum ESocketStatus {
@@ -161,7 +161,7 @@ export abstract class Client {
     /**
      * 将数据包对象序列化并加密压缩
      */
-    static async encodeAndCompress(jsonObj: any): Promise<Buffer> {
+    static async encodeAndCompress(jsonObj: any): Bluebird<Buffer> {
         const data: Buffer = await this.compressPacket(this.bufferifyObj(jsonObj));
         return data;
     }
@@ -170,7 +170,7 @@ export abstract class Client {
      * 压缩buffer并打包成ExBuffer的通讯包
      * @param buffer
      */
-    static async compressPacket(buffer: Buffer): Promise<Buffer> {
+    static async compressPacket(buffer: Buffer): Bluebird<Buffer> {
         // 异步压缩
         const deflateBuf: Buffer = <Buffer>(await deflateAsync(buffer));
 
@@ -183,7 +183,7 @@ export abstract class Client {
     /**
      * 发送json数据包
      */
-    static async sendData(cli: Client, jsonObj: any, isAwait: boolean = false): Promise<boolean> {
+    static async sendData(cli: Client, jsonObj: any, isAwait: boolean = false): Bluebird<boolean> {
         if (!cli || R.isNil(jsonObj)) {
             return false;
         }
@@ -201,7 +201,7 @@ export abstract class Client {
      * @param cli 
      * @param bufferData 
      */
-    static async sendBufferData(cli: Client, bufferData: Buffer): Promise<void> {
+    static async sendBufferData(cli: Client, bufferData: Buffer): Bluebird<void> {
         try {
             if (cli._socket && cli._status == ESocketStatus.CONNECTED) {
                 const sendBuffer: Buffer = await this.compressPacket(bufferData);

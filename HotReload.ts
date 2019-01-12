@@ -1,10 +1,10 @@
 
 import fs = require("fs");
 import * as path from "path";
-import Promise = require("bluebird");
+import Bluebird = require("bluebird");
 import _ = require("underscore");
-const readdirAsync = Promise.promisify(fs.readdir);
-const statAsync = Promise.promisify(fs.stat);
+const readdirAsync = Bluebird.promisify(fs.readdir);
+const statAsync = Bluebird.promisify(fs.stat);
 
 /**
  * 热更新模块
@@ -35,9 +35,9 @@ export class HotReload {
      * 获取给定目录下的所有js文件(包括jsx)
      * @param fpath 
      */
-    async getAllJsFiles(fpath: string): Promise<string[]> {
+    async getAllJsFiles(fpath: string): Bluebird<void> {
         const files = <string[]>await readdirAsync(fpath);
-        await Promise.each(files, async file => {
+        await Bluebird.each(files, async file => {
             const filePath: string = path.join(fpath, file);
             const stat = await statAsync(filePath);
             if (stat.isDirectory()) {
@@ -55,6 +55,20 @@ export class HotReload {
             }
         });
     }
+
+    /**
+     * 分析某个js文件的包含映射关系
+     * @param filePath 
+     */
+    private analysisIncludeRelate(filePath: string){
+        const extname: string = path.extname(filePath);
+        const option: string = extname == '.js' ? "utf8" : "binary";
+        let content: string = fs.readFileSync(filePath, option);
+        // if(){
+
+        // }
+    }
+
 }
 
 // (new HotReload()).getAllJsFiles("./server").then(result => {

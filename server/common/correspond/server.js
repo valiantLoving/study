@@ -7,12 +7,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const net = __importStar(require("net"));
-const server = net.createServer((socket) => {
+var net = __importStar(require("net"));
+var server = net.createServer(function (socket) {
     socket.end('goodbye\n');
-}).on('error', (err) => {
+}).on('error', function (err) {
     throw err;
 });
-server.listen(() => {
+server.listen(function () {
     console.log('opened server on', server.address());
 });

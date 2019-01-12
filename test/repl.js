@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const repl = require("repl");
-const client_1 = require("./client");
-let isExecuting = false;
+var repl = require("repl");
+var client_1 = require("./client");
+var isExecuting = false;
 repl.start({ prompt: 'ST Roobot::Runing >>>', eval: main });
 function main(cmd) {
     cmd = cmd.trim().toString();
-    const arr = cmd.split(",");
+    var arr = cmd.split(",");
     cmd = arr[0];
     console.log('当前cmd:', cmd);
     if (isExecuting) {
@@ -18,7 +18,7 @@ function main(cmd) {
         isExecuting = true;
     }
     if (cmd === 'send') {
-        console.log(`发送包 ${cmd}`);
+        console.log("\u53D1\u9001\u5305 " + cmd);
         client_1.sendPack(arr[1]);
         isExecuting = false;
     }
@@ -28,5 +28,5 @@ function main(cmd) {
     }
 }
 process.on("uncaughtException", function (err) {
-    console.log(`uncaughtException:${JSON.stringify(err)}`);
+    console.log("uncaughtException:" + JSON.stringify(err));
 });

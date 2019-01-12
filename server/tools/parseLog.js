@@ -7,34 +7,35 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = __importStar(require("fs"));
-const path = __importStar(require("path"));
-const _ = __importStar(require("underscore"));
-const logDir = "logs";
-const files = fs.readdirSync(logDir);
-const filterStrs = ["accumulative success"];
+var fs = __importStar(require("fs"));
+var path = __importStar(require("path"));
+var _ = __importStar(require("underscore"));
+var logDir = "logs";
+var files = fs.readdirSync(logDir);
+var filterStrs = ["accumulative success"];
 var lineNum = 0;
-const dealLine = (line) => {
+var dealLine = function (line) {
     if (!line || !_.isString(line)) {
         return;
     }
-    for (let filter of filterStrs) {
+    for (var _i = 0, filterStrs_1 = filterStrs; _i < filterStrs_1.length; _i++) {
+        var filter = filterStrs_1[_i];
         if (line.indexOf(filter) == -1) {
             return;
         }
     }
     lineNum++;
-    const uid = line.match(/[0-9]+s[0-9]+p[0-9]+/)[0];
-    const id = +(line.match(/ id:[0-9]+/)[0].substring(4));
-    return { uid, id };
+    var uid = line.match(/[0-9]+s[0-9]+p[0-9]+/)[0];
+    var id = +(line.match(/ id:[0-9]+/)[0].substring(4));
+    return { uid: uid, id: id };
 };
-const dealFile = (file) => {
-    const texts = fs.readFileSync(file).toString();
-    const lines = texts.split('\n');
-    const fileRes = {};
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const lineRes = dealLine(line);
+var dealFile = function (file) {
+    var texts = fs.readFileSync(file).toString();
+    var lines = texts.split('\n');
+    var fileRes = {};
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        var lineRes = dealLine(line);
         if (!lineRes) {
             continue;
         }
@@ -45,9 +46,10 @@ const dealFile = (file) => {
     }
     return fileRes;
 };
-const readFiles = () => {
-    const res = { "yyb": {}, "mix": {}, "iosbr": {} };
-    for (var file of files) {
+var readFiles = function () {
+    var res = { "yyb": {}, "mix": {}, "iosbr": {} };
+    for (var _i = 0, files_1 = files; _i < files_1.length; _i++) {
+        var file = files_1[_i];
         var channel;
         if (file.indexOf('yyb') >= 0) {
             channel = "yyb";
@@ -61,8 +63,8 @@ const readFiles = () => {
         else {
             continue;
         }
-        const fileRes = dealFile(path.join(__dirname, logDir, file));
-        for (let id in fileRes) {
+        var fileRes = dealFile(path.join(__dirname, logDir, file));
+        for (var id in fileRes) {
             if (res[channel][id] == null) {
                 res[channel][id] = 0;
             }
@@ -70,12 +72,12 @@ const readFiles = () => {
         }
     }
     var allNum = 0;
-    for (let channel in res) {
-        const info = res[channel];
-        for (let id in info) {
+    for (var channel_1 in res) {
+        var info = res[channel_1];
+        for (var id in info) {
             allNum += info[id];
         }
     }
-    console.log(`处理结果:${JSON.stringify(res)}, lineNum: ${lineNum},allNum:${allNum}`);
+    console.log("\u5904\u7406\u7ED3\u679C:" + JSON.stringify(res) + ", lineNum: " + lineNum + ",allNum:" + allNum);
 };
 readFiles();

@@ -7,10 +7,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = __importStar(require("underscore"));
-const crypto = __importStar(require("crypto"));
-class EncryptoTool {
-    static base64_encode(str, encode = "utf8") {
+var _ = __importStar(require("underscore"));
+var crypto = __importStar(require("crypto"));
+var EncryptoTool = (function () {
+    function EncryptoTool() {
+    }
+    EncryptoTool.base64_encode = function (str, encode) {
+        if (encode === void 0) { encode = "utf8"; }
         if (_.isEmpty(str)) {
             return "";
         }
@@ -18,32 +21,34 @@ class EncryptoTool {
             str = str.toString();
         }
         return Buffer.from(str, encode).toString("base64");
-    }
-    static base64_decode(str, encode = "base64") {
+    };
+    EncryptoTool.base64_decode = function (str, encode) {
+        if (encode === void 0) { encode = "base64"; }
         if (_.isEmpty(str)) {
             return "";
         }
         return Buffer.from(str, encode).toString();
-    }
-    static aes_encode(data) {
-        const algorithm = "aes-128-cbc";
-        const key = "cl_love_awx_3344";
-        const inputEncoding = "utf8";
-        const outputEncoding = "base64";
-        const cipher = crypto.createCipheriv(algorithm, key, "");
+    };
+    EncryptoTool.aes_encode = function (data) {
+        var algorithm = "aes-128-cbc";
+        var key = "cl_love_awx_3344";
+        var inputEncoding = "utf8";
+        var outputEncoding = "base64";
+        var cipher = crypto.createCipheriv(algorithm, key, "");
         cipher.setAutoPadding(true);
-        const encodingStr = cipher.update(data, inputEncoding, outputEncoding);
+        var encodingStr = cipher.update(data, inputEncoding, outputEncoding);
         return encodingStr + cipher.final(outputEncoding);
-    }
-    static aes_decode(data) {
-        const algorithm = "aes-128-cbc";
-        const key = "cl_love_awx_3344";
-        const inputEncoding = "base64";
-        const outputEncoding = "utf8";
-        const decipher = crypto.createDecipheriv(algorithm, key, "");
+    };
+    EncryptoTool.aes_decode = function (data) {
+        var algorithm = "aes-128-cbc";
+        var key = "cl_love_awx_3344";
+        var inputEncoding = "base64";
+        var outputEncoding = "utf8";
+        var decipher = crypto.createDecipheriv(algorithm, key, "");
         decipher.setAutoPadding(true);
-        const decodeStr = decipher.update(data, inputEncoding, outputEncoding);
+        var decodeStr = decipher.update(data, inputEncoding, outputEncoding);
         return decodeStr + decipher.final(outputEncoding);
-    }
-}
+    };
+    return EncryptoTool;
+}());
 exports.EncryptoTool = EncryptoTool;

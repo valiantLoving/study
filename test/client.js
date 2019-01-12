@@ -7,12 +7,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const ExBuffer_1 = require("../server/common/pack/ExBuffer");
-const ByteBuffer_1 = require("../server/common/pack/ByteBuffer");
-const net = __importStar(require("net"));
-const exBuffer = new ExBuffer_1.ExBuffer();
-const client = net.connect(8125, "", function () {
-    console.log(`client connect to server success`);
+var ExBuffer_1 = require("../server/common/pack/ExBuffer");
+var ByteBuffer_1 = require("../server/common/pack/ByteBuffer");
+var net = __importStar(require("net"));
+var exBuffer = new ExBuffer_1.ExBuffer();
+var client = net.connect(8125, "", function () {
+    console.log("client connect to server success");
 });
 client.on('data', function (data) {
     console.log('>> client receive socket data,length:' + data.length);
@@ -26,19 +26,20 @@ exBuffer.on('data', function (buffer) {
     console.log('exit...');
     setTimeout(function () { process.exit(0); }, 2000);
 });
-exports.sendPack = (msg = `hello I am CL`) => {
+exports.sendPack = function (msg) {
+    if (msg === void 0) { msg = "hello I am CL"; }
     var sbuf = new ByteBuffer_1.ByteBuffer();
     var buf = sbuf.uint32(55555).string(msg).pack(true);
     client.write(buf);
-    console.log(`client send packet len:${JSON.stringify(buf)}`);
+    console.log("client send packet len:" + JSON.stringify(buf));
 };
-exports.sendBigPack = () => {
+exports.sendBigPack = function () {
     var sbuf = new ByteBuffer_1.ByteBuffer();
-    const msg = JSON.stringify({ name: "cl", age: 25, sex: 1, lover: "awx", moves: ["三国演义", "射雕英雄传"] });
+    var msg = JSON.stringify({ name: "cl", age: 25, sex: 1, lover: "awx", moves: ["三国演义", "射雕英雄传"] });
     var buf = sbuf.string(msg).pack(true);
     client.write(buf);
-    console.log(`client send big packet len:${buf.length}`);
+    console.log("client send big packet len:" + buf.length);
 };
-exports.onSocketClose = () => {
+exports.onSocketClose = function () {
     client.emit("close");
 };
